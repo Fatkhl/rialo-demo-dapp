@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIALO - Welcome</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom Background dengan bg.png */
+        .custom-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                url('bg.png'),
+                linear-gradient(125deg, #0a0a0a 0%, #1a1a2e 30%, #16213e 60%, #0f3460 100%);
+            background-size: cover, 400% 400%;
+            background-position: center, 0% 0%;
+            background-repeat: no-repeat, no-repeat;
+            background-blend-mode: overlay;
+            animation: bgMove 20s ease infinite;
+            z-index: -2;
+        }
+
+        @keyframes bgMove {
+            0% {
+                background-position: center, 0% 0%;
+            }
+            25% {
+                background-position: center, 100% 0%;
+            }
+            50% {
+                background-position: center, 100% 100%;
+            }
+            75% {
+                background-position: center, 0% 100%;
+            }
+            100% {
+                background-position: center, 0% 0%;
+            }
+        }
+
+        /* Additional effects */
+        .hologram-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+            animation: hologramPulse 8s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes hologramPulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        /* Logo animation */
+        .logo-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Investor logos animation - Full width scroll */
+        .investor-scroll-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+
+        .investor-scroll {
+            display: flex;
+            animation: scroll 30s linear infinite;
+            width: max-content;
+        }
+
+        .investor-scroll:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .investor-item {
+            flex-shrink: 0;
+            margin: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 30, 46, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white overflow-x-hidden">
+    <!-- Custom Background dengan bg.png -->
+    <div class="custom-bg"></div>
+    <div class="hologram-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="relative z-10 min-h-screen flex flex-col justify-center items-center px-4 py-12">
+        <!-- Large RIALO Logo -->
+        <div class="mb-8 logo-float">
+            <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/6883572e6ebf68cfe676dd82_rialo-logo.svg" alt="RIALO Logo" class="h-32 w-32 md:h-48 md:w-48">
+        </div>
+
+        <!-- Welcome Text -->
+        <h1 class="text-4xl md:text-6xl font-bold text-center mb-4 tracking-wider">WELCOME TO RIALO</h1>
+        
+        <!-- Subtitle -->
+        <h2 class="text-xl md:text-2xl font-semibold text-center mb-8 text-blue-300">RETHINK-REBUILD-RIALO</h2>
+
+        <!-- Description Text -->
+        <p class="text-lg md:text-xl text-center mb-12 max-w-2xl mx-auto text-gray-300">
+            rain flows, it's all native, Build Less, Build More.
+        </p>
+
+        <!-- Go to dApps Button -->
+        <a href="dapps.html" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-lg font-bold px-8 py-4 rounded-full transition duration-300 transform hover:scale-105 mb-16 shadow-lg">
+            GO TO DAPPS
+        </a>
+
+        <!-- Investor Section -->
+        <div class="w-full max-w-7xl mx-auto">
+            <h3 class="text-xl md:text-2xl font-bold text-center mb-8">INVESTOR</h3>
+            
+            <!-- Investor Logos Container - Full Width Scroll -->
+            <div class="investor-scroll-container">
+                <div class="investor-scroll">
+                    <!-- Investor Logo 1 -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5cc25c527be7301fff_02cdec00f75d40d99420f1009dd12618_mirana%20logo.svg" alt="Mirana" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <!-- Investor Logo 2 -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5cb4b92d4661ffb9c7_white_susquehanna.svg" alt="Susquehanna" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <!-- Investor Logo 3 -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688c87b81d4f7cd59d6e8bd8_pantera-capital-vector-logo-2023%20(1).svg" alt="Pantera Capital" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <!-- Investor Logo 4 -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688c8886b702b8d8b59fe294_Mysten-Labs-logo.png" alt="Mysten Labs" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <!-- Investor Logo 5 -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c43f1648a4de4cd21_idyLR0_e27_logos.svg" alt="Investor" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <!-- Investor Logo 6 -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c693b2590c1bb9731_35ba8394f7676e4178eed744e8cdfb86_idvwBVIzMq_1753978235144.svg" alt="Investor" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <!-- Investor Logo 7 -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c48219ed53e4bff74_54fafd25d61f15c9097056c4f02afc37_combination-logo.svg" alt="Investor" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <!-- Investor Logo 8 -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c4122c176c883dab6_2f8efe0ee7ee064e020b7f84540bbf25_edge%20capital%20.svg" alt="Edge Capital" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <!-- Investor Logo 9 -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c64887f6642abda0b_35068a8ef600a3e471c1a9fe76f21636_id5M4ATEoj_logos.svg" alt="Investor" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <!-- Investor Logo 10 -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c3db74958b6397f8b_73c167eb59e6186ae7a3f6bc54bf7e43_Coinbase_Wordmark.svg" alt="Coinbase" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <!-- Duplicate for seamless loop -->
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5cc25c527be7301fff_02cdec00f75d40d99420f1009dd12618_mirana%20logo.svg" alt="Mirana" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5cb4b92d4661ffb9c7_white_susquehanna.svg" alt="Susquehanna" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688c87b81d4f7cd59d6e8bd8_pantera-capital-vector-logo-2023%20(1).svg" alt="Pantera Capital" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688c8886b702b8d8b59fe294_Mysten-Labs-logo.png" alt="Mysten Labs" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c43f1648a4de4cd21_idyLR0_e27_logos.svg" alt="Investor" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c693b2590c1bb9731_35ba8394f7676e4178eed744e8cdfb86_idvwBVIzMq_1753978235144.svg" alt="Investor" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c48219ed53e4bff74_54fafd25d61f15c9097056c4f02afc37_combination-logo.svg" alt="Investor" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c4122c176c883dab6_2f8efe0ee7ee064e020b7f84540bbf25_edge%20capital%20.svg" alt="Edge Capital" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c64887f6642abda0b_35068a8ef600a3e471c1a9fe76f21636_id5M4ATEoj_logos.svg" alt="Investor" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                    
+                    <div class="investor-item">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688b9d5c3db74958b6397f8b_73c167eb59e6186ae7a3f6bc54bf7e43_Coinbase_Wordmark.svg" alt="Coinbase" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition duration-300">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 bg-opacity-50 py-6 mt-8 border-t border-gray-800">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400 text-sm">© 2023 RIALO Ecosystem. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effect to investor logos
+            const investorLogos = document.querySelectorAll('.investor-item img');
+            investorLogos.forEach(logo => {
+                logo.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.2)';
+                });
+                
+                logo.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+
+            // Add click effect to the button
+            const goToDappsBtn = document.querySelector('a[href="index.html"]');
+            goToDappsBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Add a ripple effect
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                // Remove ripple after animation
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+                
+                // Navigate after a short delay
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 300);
+            });
+
+            // Add ripple effect styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .ripple {
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.5);
+                    transform: scale(0);
+                    animation: ripple-animation 0.6s linear;
+                }
+                
+                @keyframes ripple-animation {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+                
+                a[href="index.html"] {
+                    position: relative;
+                    overflow: hidden;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
