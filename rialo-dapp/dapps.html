@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIALO - RETHINK-REBUILD-RIALO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Hologram Background Animation */
+        .hologram-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(125deg, #0a0a0a 0%, #1a1a2e 30%, #16213e 60%, #0f3460 100%),
+                url('https://assets.unicorn.studio/images/l2abTweJIYXF5iLWv6Kkx9VkeC23/aVector_v1.svg'),
+                url('https://assets.unicorn.studio/media/blue_noise_med.png');
+            background-size: 400% 400%, cover, 200px;
+            background-position: 0% 0%, center, center;
+            background-repeat: no-repeat, no-repeat, repeat;
+            animation: hologramMove 20s ease infinite;
+            z-index: -2;
+        }
+
+        @keyframes hologramMove {
+            0% {
+                background-position: 0% 0%, center, center;
+            }
+            25% {
+                background-position: 100% 0%, center, center;
+            }
+            50% {
+                background-position: 100% 100%, center, center;
+            }
+            75% {
+                background-position: 0% 100%, center, center;
+            }
+            100% {
+                background-position: 0% 0%, center, center;
+            }
+        }
+
+        /* Additional hologram effects */
+        .hologram-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+            animation: hologramPulse 8s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes hologramPulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .glass-card {
+            background: rgba(30, 30, 46, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+            backdrop-filter: blur(5px);
+        }
+        
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        .social-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: scale(1.2);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 30, 46, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Hologram Background -->
+    <div class="hologram-bg"></div>
+    <div class="hologram-overlay"></div>
+
+    <!-- Header -->
+    <header class="bg-gray-900 bg-opacity-80 backdrop-blur-md shadow-sm sticky top-0 z-10 border-b border-gray-700">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="https://www.rialo.io/" target="_blank" class="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition duration-200">
+                    <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/6883572e6ebf68cfe676dd82_rialo-logo.svg" alt="RIALO Logo" class="h-10 w-10">
+                    <h1 class="text-xl font-bold">RIALO dApp</h1>
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="faucet.html" class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center">
+                    <i class="fas fa-faucet mr-2"></i> Get Free RIALO
+                </a>
+                <div id="walletStatus" class="bg-blue-500 bg-opacity-20 text-blue-300 px-3 py-1 rounded-full text-sm border border-blue-500 border-opacity-30">
+                    <i class="fas fa-wallet mr-1"></i>
+                    <span id="walletAddress">0x742d...35a9</span>
+                </div>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                    Connect Wallet
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 relative z-10">
+        <!-- Hero Section -->
+        <section class="gradient-bg rounded-2xl p-8 mb-12 text-center border border-white border-opacity-20">
+            <div class="flex justify-center mb-4">
+                <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/6883572e6ebf68cfe676dd82_rialo-logo.svg" alt="RIALO Logo" class="h-20 w-20">
+            </div>
+            <h1 class="text-4xl font-bold mb-4">RETHINK • REBUILD • RIALO</h1>
+            <p class="text-xl mb-6 max-w-2xl mx-auto">Participate in governance, shape the future of RIALO ecosystem, and earn rewards through staking</p>
+            <div class="flex justify-center space-x-4">
+                <a href="#staking" class="bg-white text-blue-600 hover:bg-gray-100 font-medium px-6 py-3 rounded-lg transition duration-200">
+                    Start Staking
+                </a>
+                <a href="faucet.html" class="bg-transparent border-2 border-white hover:bg-white hover:text-blue-600 font-medium px-6 py-3 rounded-lg transition duration-200">
+                    Claim Faucet
+                </a>
+            </div>
+        </section>
+
+        <!-- Dashboard -->
+        <section id="dashboard" class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Dashboard</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-xl shadow-md p-6 card-hover border border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">RIALO Balance</h3>
+                        <i class="fas fa-coins text-yellow-400 text-xl"></i>
+                    </div>
+                    <p class="text-3xl font-bold" id="balance">1,250 RLO</p>
+                </div>
+                <div class="glass-card rounded-xl shadow-md p-6 card-hover border border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Staked RIALO</h3>
+                        <i class="fas fa-lock text-blue-400 text-xl"></i>
+                    </div>
+                    <p class="text-3xl font-bold" id="stakedBalance">500 RLO</p>
+                </div>
+                <div class="glass-card rounded-xl shadow-md p-6 card-hover border border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Voting Power</h3>
+                        <i class="fas fa-vote-yea text-green-400 text-xl"></i>
+                    </div>
+                    <p class="text-3xl font-bold" id="votingPower">500 VP</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Staking Section -->
+        <section id="staking" class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Staking & Unstaking</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Stake Form -->
+                <div class="glass-card rounded-xl shadow-md p-6 card-hover border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">Stake RIALO</h3>
+                    <div class="mb-4">
+                        <label class="block mb-2">Amount to Stake</label>
+                        <div class="relative">
+                            <input type="number" id="stakeAmount" class="w-full bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" placeholder="Enter RIALO amount">
+                            <button class="absolute right-2 top-2 bg-gray-700 text-gray-300 px-3 py-1 rounded-md text-sm">MAX</button>
+                        </div>
+                    </div>
+                    <button id="stakeBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition duration-200">
+                        Stake RLO
+                    </button>
+                </div>
+
+                <!-- Unstake Info -->
+                <div class="glass-card rounded-xl shadow-md p-6 card-hover border border-gray-700">
+                    <h3 class="text-lg font-semibold mb-4">Unstake Information</h3>
+                    <div class="mb-4">
+                        <p class="mb-2">Staked Amount</p>
+                        <p class="text-xl font-bold" id="stakedAmountDisplay">500 RLO</p>
+                    </div>
+                    <div class="mb-6">
+                        <p class="mb-2">Unlock Time</p>
+                        <p class="text-lg font-medium" id="unlockTime">Oct 15, 2023</p>
+                    </div>
+                    <button id="unstakeBtn" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-medium py-3 rounded-lg transition duration-200">
+                        Unstake RLO
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Create Proposal -->
+        <section id="createProposal" class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Create Proposal</h2>
+            <div class="glass-card rounded-xl shadow-md p-6 card-hover border border-gray-700">
+                <div class="mb-4">
+                    <label class="block mb-2">Proposal Title</label>
+                    <input type="text" id="proposalTitle" class="w-full bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" placeholder="Enter proposal title">
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Description</label>
+                    <textarea id="proposalDescription" rows="4" class="w-full bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" placeholder="Describe your proposal"></textarea>
+                </div>
+                <div class="mb-6">
+                    <label class="block mb-2">Requested Amount (RLO)</label>
+                    <input type="number" id="proposalAmount" class="w-full bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white" placeholder="Enter amount">
+                </div>
+                <button id="createProposalBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 rounded-lg transition duration-200">
+                    Submit Proposal
+                </button>
+            </div>
+        </section>
+
+        <!-- Active Proposals -->
+        <section id="activeProposals" class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Active Proposals</h2>
+            <div id="proposalsList" class="space-y-6">
+                <!-- Proposal 1 -->
+                <div class="glass-card rounded-xl shadow-md p-6 card-hover border border-gray-700">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold">Add New Game Feature: PvP Arena</h3>
+                            <p class="text-gray-400 mt-1">Proposal #1 • Ends in 2 days</p>
+                        </div>
+                        <span class="bg-blue-500 bg-opacity-20 text-blue-300 px-3 py-1 rounded-full text-sm font-medium border border-blue-500 border-opacity-30">Active</span>
+                    </div>
+                    <p class="mb-4">Implement player vs player arena battles with ranking system and rewards for top players.</p>
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm text-gray-400 mb-1">
+                            <span>Yes: 65%</span>
+                            <span>No: 35%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button class="vote-btn flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition duration-200" data-proposal="1" data-vote="yes">
+                            <i class="fas fa-thumbs-up mr-2"></i>Vote Yes
+                        </button>
+                        <button class="vote-btn flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition duration-200" data-proposal="1" data-vote="no">
+                            <i class="fas fa-thumbs-down mr-2"></i>Vote No
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Proposal 2 -->
+                <div class="glass-card rounded-xl shadow-md p-6 card-hover border border-gray-700">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold">Allocate Funds for Marketing Campaign</h3>
+                            <p class="text-gray-400 mt-1">Proposal #2 • Ends in 5 days</p>
+                        </div>
+                        <span class="bg-blue-500 bg-opacity-20 text-blue-300 px-3 py-1 rounded-full text-sm font-medium border border-blue-500 border-opacity-30">Active</span>
+                    </div>
+                    <p class="mb-4">Use 10,000 RLO from treasury for Q4 marketing campaign to increase user adoption.</p>
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm text-gray-400 mb-1">
+                            <span>Yes: 42%</span>
+                            <span>No: 58%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                            <div class="bg-red-500 h-2.5 rounded-full" style="width: 42%"></div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button class="vote-btn flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition duration-200" data-proposal="2" data-vote="yes">
+                            <i class="fas fa-thumbs-up mr-2"></i>Vote Yes
+                        </button>
+                        <button class="vote-btn flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition duration-200" data-proposal="2" data-vote="no">
+                            <i class="fas fa-thumbs-down mr-2"></i>Vote No
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project Status -->
+        <section id="projectStatus">
+            <h2 class="text-2xl font-bold mb-6">Project Status</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Passed Proposals -->
+                <div class="glass-card rounded-xl shadow-md p-6 card-hover border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                        Passed Proposals
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-green-500 pl-4 py-1">
+                            <h4 class="font-semibold">Implement Staking Rewards</h4>
+                            <p class="text-sm text-gray-400">Approved on Sep 20, 2023</p>
+                        </div>
+                        <div class="border-l-4 border-green-500 pl-4 py-1">
+                            <h4 class="font-semibold">Develop Mobile dApp Version</h4>
+                            <p class="text-sm text-gray-400">Approved on Aug 15, 2023</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Failed Proposals -->
+                <div class="glass-card rounded-xl shadow-md p-6 card-hover border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-times-circle text-red-400 mr-2"></i>
+                        Failed Proposals
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-red-500 pl-4 py-1">
+                            <h4 class="font-semibold">Increase Transaction Fees</h4>
+                            <p class="text-sm text-gray-400">Rejected on Jul 10, 2023</p>
+                        </div>
+                        <div class="border-l-4 border-red-500 pl-4 py-1">
+                            <h4 class="font-semibold">Reduce Staking Rewards</h4>
+                            <p class="text-sm text-gray-400">Rejected on Jun 5, 2023</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 bg-opacity-80 py-8 mt-12 border-t border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/6883572e6ebf68cfe676dd82_rialo-logo.svg" alt="RIALO Logo" class="h-8 w-8">
+                        <h2 class="text-lg font-bold">RIALO dApp</h2>
+                    </div>
+                    <p class="text-gray-400 mt-2">RETHINK-REBUILD-RIALO</p>
+                </div>
+                <div class="flex space-x-6 mb-4 md:mb-0">
+                    <a href="https://discord.com/invite/RialoProtocol" target="_blank" class="social-icon text-gray-400 hover:text-white transition duration-200">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/688d08cc1619663c0e93b603_ed29242a146d8871bd27c9529ab1a60b_discord.svg" alt="Discord" class="h-6 w-6">
+                    </a>
+                    <a href="https://t.me/rialoprotocol" target="_blank" class="social-icon text-gray-400 hover:text-white transition duration-200">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/6883572e6ebf68cfe676ddc0_telegram-logo.svg" alt="Telegram" class="h-6 w-6">
+                    </a>
+                    <a href="https://x.com/RialoHQ" target="_blank" class="social-icon text-gray-400 hover:text-white transition duration-200">
+                        <img src="https://cdn.prod.website-files.com/6883572e6ebf68cfe676dd65/6883572e6ebf68cfe676ddbf_x-logo.svg" alt="X" class="h-6 w-6">
+                    </a>
+                </div>
+                <div class="text-gray-400 text-sm">
+                    <p>© 2023 RIALO Ecosystem. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for dApp Interactions -->
+    <script>
+        // Simulated blockchain interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Staking functionality
+            document.getElementById('stakeBtn').addEventListener('click', function() {
+                const amount = document.getElementById('stakeAmount').value;
+                if (!amount || amount <= 0) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+                
+                // Simulate staking transaction
+                console.log(`Staking ${amount} RLO...`);
+                
+                // Update UI
+                const currentStaked = parseInt(document.getElementById('stakedBalance').textContent);
+                const newStaked = currentStaked + parseInt(amount);
+                document.getElementById('stakedBalance').textContent = `${newStaked} RLO`;
+                document.getElementById('votingPower').textContent = `${newStaked} VP`;
+                document.getElementById('stakedAmountDisplay').textContent = `${newStaked} RLO`;
+                
+                // Calculate unlock date (7 days from now)
+                const unlockDate = new Date();
+                unlockDate.setDate(unlockDate.getDate() + 7);
+                document.getElementById('unlockTime').textContent = unlockDate.toDateString();
+                
+                // Reset input
+                document.getElementById('stakeAmount').value = '';
+                
+                alert(`Successfully staked ${amount} RLO!`);
+            });
+            
+            // Unstaking functionality
+            document.getElementById('unstakeBtn').addEventListener('click', function() {
+                // In a real dApp, we would check if the lock period has passed
+                const canUnstake = confirm('Are you sure you want to unstake your RLO?');
+                
+                if (canUnstake) {
+                    // Simulate unstaking transaction
+                    console.log('Unstaking RLO...');
+                    
+                    // Update UI
+                    const stakedAmount = parseInt(document.getElementById('stakedBalance').textContent);
+                    document.getElementById('stakedBalance').textContent = '0 RLO';
+                    document.getElementById('votingPower').textContent = '0 VP';
+                    document.getElementById('stakedAmountDisplay').textContent = '0 RLO';
+                    
+                    alert('Successfully unstaked your RLO!');
+                }
+            });
+            
+            // Create proposal functionality
+            document.getElementById('createProposalBtn').addEventListener('click', function() {
+                const title = document.getElementById('proposalTitle').value;
+                const description = document.getElementById('proposalDescription').value;
+                const amount = document.getElementById('proposalAmount').value;
+                
+                if (!title || !description || !amount) {
+                    alert('Please fill all fields');
+                    return;
+                }
+                
+                // Check if user has enough stake (simulated)
+                const stakedAmount = parseInt(document.getElementById('stakedBalance').textContent);
+                if (stakedAmount < 100) {
+                    alert('You need to stake at least 100 RLO to create a proposal');
+                    return;
+                }
+                
+                // Simulate proposal creation
+                console.log(`Creating proposal: ${title}`);
+                
+                // Reset form
+                document.getElementById('proposalTitle').value = '';
+                document.getElementById('proposalDescription').value = '';
+                document.getElementById('proposalAmount').value = '';
+                
+                alert('Proposal created successfully!');
+            });
+            
+            // Voting functionality
+            document.querySelectorAll('.vote-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const proposalId = this.getAttribute('data-proposal');
+                    const vote = this.getAttribute('data-vote');
+                    
+                    // Check if user has stake (simulated)
+                    const stakedAmount = parseInt(document.getElementById('stakedBalance').textContent);
+                    if (stakedAmount <= 0) {
+                        alert('You need to stake RLO to vote');
+                        return;
+                    }
+                    
+                    // Simulate voting transaction
+                    console.log(`Voting ${vote} on proposal ${proposalId}`);
+                    
+                    // Update UI to show user has voted
+                    this.disabled = true;
+                    this.innerHTML = `<i class="fas fa-check mr-2"></i>Voted ${vote === 'yes' ? 'Yes' : 'No'}`;
+                    this.classList.remove('bg-green-600', 'bg-red-600', 'hover:bg-green-700', 'hover:bg-red-700');
+                    this.classList.add('bg-gray-600');
+                    
+                    alert(`Vote cast successfully!`);
+                });
+            });
+            
+            // Simulated wallet connection
+            document.querySelector('button.bg-blue-600').addEventListener('click', function() {
+                // In a real dApp, this would connect to MetaMask or another wallet
+                alert('Wallet connection functionality would be implemented here');
+            });
+        });
+    </script>
+</body>
+</html>
