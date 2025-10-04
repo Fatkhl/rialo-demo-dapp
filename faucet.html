@@ -136,7 +136,7 @@
       </div>
     </section>
 
-    <!-- FAQ (tetap) -->
+    <!-- FAQ -->
     <section>
       <h2 class="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
       <div class="glass-card rounded-xl shadow-md p-6 border border-gray-700 text-gray-300">
@@ -157,10 +157,10 @@
   <script>
     /*** ====== KONFIGURASI KOMUNIKASI DENGAN GAME ====== ***/
     const GAME_ORIGIN = 'https://rialo-shooter.vercel.app';     // whitelist origin game
-    const GAME_URL    = GAME_ORIGIN + '/?verify=1';              // jalankan verification mode
+    const GAME_URL    = GAME_ORIGIN + '/?verify=1';             // jalankan verification mode
     const NEED_LEVEL  = 7;
-    const NEED_ACTIVE_SECONDS = 5 * 60;                          // 5 menit
-    const QUALITY_MIN = 70;                                      // minimal kualitas permainan (aktifitas) %
+    const NEED_ACTIVE_SECONDS = 5 * 60;                         // 5 menit
+    const QUALITY_MIN = 70;                                     // minimal kualitas permainan (aktifitas) %
 
     // Elemen UI
     const claimButton   = document.getElementById('claimButton');
@@ -222,8 +222,11 @@
       const w = 900, h = 700;
       const y = Math.max(0, (screen.height - h)/2);
       const x = Math.max(0, (screen.width  - w)/2);
-      verifyPopup = window.open(`${GAME_URL}&challenge=${challenge}&returnOrigin=${encodeURIComponent(location.origin)}`,
-                                'rialo-verify','popup=1,resizable=yes,width='+w+',height='+h+',left='+x+',top='+y);
+      verifyPopup = window.open(
+        `${GAME_URL}&challenge=${challenge}&returnOrigin=${encodeURIComponent(location.origin)}`,
+        'rialo-verify',
+        'popup=1,resizable=yes,width='+w+',height='+h+',left='+x+',top='+y
+      );
       if(!verifyPopup){ alert('Popup diblokir. Izinkan popup untuk domain ini.'); return; }
       setEligible(false);
     });
@@ -238,18 +241,17 @@
 
     // Terima progress & hasil dari game
     window.addEventListener('message', async (ev)=>{
-      if(ev.origin !== GAME_ORIGIN) return;                          // origin whitelist
+      if(ev.origin !== GAME_ORIGIN) return;             // origin whitelist
       const msg = ev.data || {};
       if(!msg.type) return;
 
       if(msg.type === 'rialo-verify-progress'){
-        // update bar realtime (opsional)
         const lvl = Number(msg.level||0);
         const at  = Number(msg.activeSeconds||0);
         const q   = Math.round(Number(msg.quality||0));
         const pctLvl = Math.min(100, (lvl/NEED_LEVEL)*100);
         const pctTime= Math.min(100, (at/NEED_ACTIVE_SECONDS)*100);
-        const progress = Math.round((pctLvl*0.5 + pctTime*0.5));     // 50:50
+        const progress = Math.round((pctLvl*0.5 + pctTime*0.5)); // 50:50
         verifyBar.style.width = progress+'%';
         verifyProgress.textContent = progress+'%';
         vLevelEl.textContent = Math.min(lvl, NEED_LEVEL);
@@ -266,7 +268,7 @@
         // cegah replay lama (>10 menit)
         if(Math.abs(Date.now()-ts) > 10*60*1000) return;
 
-        // verifikasi checksum (bukan keamanan absolut, tapi anti replay/rekayasa ringan)
+        // verifikasi checksum (anti rekayasa ringan)
         const expected = await sha256(`${challenge}|${level}|${activeSeconds}|${Math.round(quality||0)}|${ts}`);
         if(expected !== checksum) return;
 
