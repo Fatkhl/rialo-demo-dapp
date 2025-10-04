@@ -155,20 +155,13 @@
   </footer>
 
   <script>
-/*** ====== KONFIGURASI KOMUNIKASI DENGAN GAME (Level-only) ====== ***/
+/*** ====== KONFIG LEVEL-ONLY (langsung lulus saat LV7) ====== ***/
 const GAME_URL = 'https://rialo-shooter.vercel.app/?verify=1';
 const GAME_ORIGIN = new URL(GAME_URL).origin;
+const ALLOW_ORIGINS = new Set([GAME_ORIGIN,'http://localhost:5173','http://localhost:3000']);
+const NEED_LEVEL = 7;
 
-// (opsional) allowlist tambahan untuk preview/local dev
-const ALLOW_ORIGINS = new Set([
-  GAME_ORIGIN,
-  'http://localhost:5173',
-  'http://localhost:3000'
-]);
-
-const NEED_LEVEL = 7;   // syarat hanya Level 7
-
-// Elemen UI
+// UI refs
 const claimButton    = document.getElementById('claimButton');
 const eligibilityEl  = document.getElementById('eligibilityStatus');
 const reqGame        = document.getElementById('reqGame');
@@ -182,27 +175,18 @@ const vQualityEl     = document.getElementById('vQuality');
 let verifyPopup = null;
 let challenge = null;
 let verifiedPayload = null;
-let provisionalPass = false;
+let levelPassed = false; // <— cukup ini, tanpa result
 
-/* === UI tweak: sembunyikan waktu & kualitas, dan ganti requirement text === */
-(function simplifyUI(){
+// Rapikan UI (hapus waktu & quality)
+(function(){
   try{
-    // sembunyikan kolom Active time & Quality
     vTimeEl?.parentElement && (vTimeEl.parentElement.style.display = 'none');
     vQualityEl?.parentElement && (vQualityEl.parentElement.style.display = 'none');
-    // ubah requirement di card claim
     if(reqGame) reqGame.textContent = 'Capai Level 7 di game verifikasi';
-    // ubah bullet list di play-verify card
     const ul = document.querySelector('#playVerifyCard ul.list-disc');
     if(ul) ul.innerHTML = '<li>Capai <b>Level 7</b></li>';
   }catch(e){}
 })();
-
-async function sha256(text){
-  const data = new TextEncoder().encode(text);
-  const hash = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
 
 function setEligible(ok, {badge='Verified'} = {}){
   if(ok){
@@ -226,19 +210,15 @@ function setEligible(ok, {badge='Verified'} = {}){
   }
 }
 
-// === Mulai verifikasi → buka popup ===
+// Mulai verifikasi
 document.getElementById('startVerifyBtn').addEventListener('click', ()=>{
-  // generate challenge
-  challenge = (()=> {
-    const arr = new Uint8Array(16);
-    crypto.getRandomValues(arr);
-    return Array.from(arr).map(b=>b.toString(16).padStart(2,'0')).join('');
-  })();
+  // challenge tetap dibuat, tapi tak dipakai ketat
+  const arr = new Uint8Array(16); crypto.getRandomValues(arr);
+  challenge = Array.from(arr).map(b=>b.toString(16).padStart(2,'0')).join('');
 
   const w = 900, h = 700;
   const y = Math.max(0, (screen.height - h)/2);
   const x = Math.max(0, (screen.width  - w)/2);
-
   verifyPopup = window.open(
     `${GAME_URL}&challenge=${challenge}&returnOrigin=${encodeURIComponent(location.origin)}`,
     'rialo-verify',
@@ -246,18 +226,17 @@ document.getElementById('startVerifyBtn').addEventListener('click', ()=>{
   );
   if(!verifyPopup){ alert('Popup diblokir. Izinkan popup untuk domain ini.'); return; }
 
-  provisionalPass = false;
+  levelPassed = false;
   setEligible(false);
-  // reset progress UI
   verifyBar.style.width = '0%';
   verifyProgress.textContent = '0%';
   vLevelEl.textContent = '0';
 });
 
-// === Reset verifikasi ===
+// Reset
 document.getElementById('resetVerifyBtn').addEventListener('click', ()=>{
   verifiedPayload = null;
-  provisionalPass = false;
+  levelPassed = false;
   setEligible(false);
   verifyBar.style.width = '0%';
   verifyProgress.textContent = '0%';
@@ -265,53 +244,42 @@ document.getElementById('resetVerifyBtn').addEventListener('click', ()=>{
   if(verifyPopup && !verifyPopup.closed) verifyPopup.close();
 });
 
-// === Terima progress & hasil dari game (LEVEL ONLY) ===
-window.addEventListener('message', async (ev)=>{
+// Terima pesan dari game
+window.addEventListener('message', (ev)=>{
   if(!ALLOW_ORIGINS.has(ev.origin)) return;
   const msg = ev.data || {};
   if(!msg.type) return;
 
   if(msg.type === 'rialo-verify-progress'){
-    const lvl = Number(msg.level||0);
+    const lvl = Number(msg.level || 0);
     const progress = Math.round(Math.min(100, (lvl/NEED_LEVEL)*100));
     verifyBar.style.width = progress+'%';
     verifyProgress.textContent = progress+'%';
     vLevelEl.textContent = Math.min(lvl, NEED_LEVEL);
 
-    // provisional pass → segera hijau saat ≥7
-    if(!verifiedPayload && !provisionalPass && lvl>=NEED_LEVEL){
-      provisionalPass = true;
-      setEligible(true, {badge:'Verified (pending finalize)'});
+    // LANGSUNG LULUS jika sudah >= 7
+    if(!levelPassed && lvl >= NEED_LEVEL){
+      levelPassed = true;
+      setEligible(true, {badge:'Verified'});
+      // optional: tutup popup
+      if(verifyPopup && !verifyPopup.closed) verifyPopup.close();
     }
   }
 
+  // Kalau game baru mengirim result, simpan saja (tidak wajib)
   if(msg.type === 'rialo-verify-result'){
-    if(!challenge || msg.challenge !== challenge) return;
-    const { level, ts, checksum } = msg;
-    if(typeof level!=='number' || !ts || !checksum) return;
-    if(Math.abs(Date.now()-ts) > 10*60*1000) return; // >10 menit = replay
-
-    const expected = await sha256(`${challenge}|${level}|0|0|${ts}`);
-    if(expected !== checksum){
-      // fallback kalau game lama pakai format lama
-      if(level >= NEED_LEVEL){
-        setEligible(true, {badge:'Verified'});
-        verifiedPayload = msg;
-        if(verifyPopup && !verifyPopup.closed) verifyPopup.close();
-      }
-      return;
+    verifiedPayload = msg;
+    if(!levelPassed && Number(msg.level||0) >= NEED_LEVEL){
+      levelPassed = true;
+      setEligible(true, {badge:'Verified'});
     }
-
-    const pass = (level>=NEED_LEVEL);
-    setEligible(pass, {badge:'Verified'});
-    if(pass) verifiedPayload = msg;
     if(verifyPopup && !verifyPopup.closed) verifyPopup.close();
   }
 });
 
 /*** ====== CLAIM (dummy) ====== ***/
 claimButton.addEventListener('click', ()=>{
-  if(!verifiedPayload && !provisionalPass){
+  if(!levelPassed){
     alert('Selesaikan verifikasi dulu (capai Level 7).');
     return;
   }
@@ -336,10 +304,8 @@ function tickReset(){
 }
 setInterval(tickReset,1000); tickReset();
 
-// connect wallet dummy
+// dummy connect wallet
 document.getElementById('connectWalletBtn').addEventListener('click',()=>{
   alert('Wallet connect: implementasi sebenarnya pakai MetaMask/WalletConnect.');
 });
 </script>
-</body>
-</html>
